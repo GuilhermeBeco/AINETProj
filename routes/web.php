@@ -13,8 +13,11 @@
 
 Route::get('/', function () {
     return view('welcome');
-});
+})->name('welcome');
 
 Auth::routes();
-
 Route::get('/home', 'HomeController@index')->name('home');
+Route::get('users', 'UserController@index')->name('users.index');
+//US1
+Route::post('login', 'LoginController@authenticate');
+Route::get('logout', 'LoginController@logout');
