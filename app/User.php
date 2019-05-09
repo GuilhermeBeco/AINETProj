@@ -36,4 +36,48 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+     public function typeToStr()
+    {
+        switch ($this->tipo_socio) {
+            case 'P':
+                return 'Piloto';
+            case 'NP':
+                return 'Normal';
+            case 'A':
+                return 'Aeromodelista';
+        }
+
+        return 'Unknown';
+    }
+    public function isPiloto()
+    {
+        return $this->tipo_socio === 'P';
+    }
+
+    public function isNormal()
+    {
+        return $this->tipo_socio === 'NP';
+    }
+
+    public function isAeromodelista()
+    {
+        return $this->tipo_socio === 'A';
+    }
+
+    public function isAtivo()
+    {
+        return $this->ativo === 1;
+    }
+    public function isInstrutor()
+    {
+        return $this->instrutor===1;
+    }
+    public function isAluno()
+    {
+        return $this->aluno===1;
+    }
+    public function isDirecao()
+    {
+        return $this->direcao===1;
+    }
 }
