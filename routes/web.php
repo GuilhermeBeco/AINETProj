@@ -17,9 +17,3 @@ Route::get('/', function () {
 
 Auth::routes();
 Route::get('/home', 'HomeController@index')->name('home');
-//US1
-Route::post('login', 'LoginController@authenticate');
-Route::get('logout', 'LoginController@logout');
-//US5
-Route::get('password', 'UserController@showEditPassword')->name('showPassword');
-Route::patch('password', 'UserController@editPassword')->name('editPassword');

@@ -36,4 +36,12 @@ class LoginController extends Controller
     {
         $this->middleware('guest')->except('logout');
     }
+
+    protected function authenticated(Request $request, $user)
+    {
+        if ($user->ativo == 0) {// do your margic here
+            Auth::logout();
+            return redirect()->route('login')->with('error', 'Tem que estar ativo');
+        }
+    }
 }
