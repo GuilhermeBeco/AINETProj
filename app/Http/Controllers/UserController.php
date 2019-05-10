@@ -82,7 +82,7 @@ class UserController extends Controller
         }          
         dd($user, $request->oldPassword, $password);
         /*
-        update($requeste,$user)
+        update($request,$user)
         */
     }
 }
