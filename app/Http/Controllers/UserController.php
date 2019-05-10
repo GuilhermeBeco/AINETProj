@@ -13,21 +13,23 @@ class UserController extends Controller
     {
         $this->middleware('auth');
     }
-        public function create()
+
+    public function create()
     {
         $this->authorize('create', User::class);
 
         $user = new User;
         return view('users.add', compact('user'));
     }
+
     public function store(StoreUserRequest $request)
     {
         $this->authorize('create', User::class);
 
         $user = new User();
         $user->fill($request->all());
-        $user->ativio=false;
-        $user->password_inicial=true;
+        $user->ativo = false;
+        $user->password_inicial = true;
         $user->password = Hash::make($request->data_nascimento);//a pass inicial
         $user->save();
 
@@ -35,7 +37,8 @@ class UserController extends Controller
             ->route('users.index')
             ->with('success', 'User added successfully!');
     }
-      public function destroy(User $user)
+
+    public function destroy(User $user)
     {
         $this->authorize('delete', $user);
 
@@ -44,6 +47,7 @@ class UserController extends Controller
             ->route('users.index')
             ->with('success', 'User deleted successfully!');
     }
+
     public function update(UpdateUserRequest $request, User $user)
     {
         $this->authorize('update', $user);
@@ -63,27 +67,31 @@ class UserController extends Controller
 
     public function index()
     {
-        if($this->authorize('list', User::class)){
+        if ($this->authorize('list', User::class)) {
             $users = User::all();
-        }else{
-            $users=User::where('ativo',=,1)->paginate(15,['num_socio','nome_informal','foto','email','telefone','tipo_socio','num_licenca','direcao'])    
+        } else {
+            $users = User::where('ativo' == 1)->paginate(15, ['num_socio', 'nome_informal', 'foto', 'email', 'telefone', 'tipo_socio', 'num_licenca', 'direcao']);
         }
-        
+
         return view('users.index', compact('users'));
     }
-    public function showEditPassword(){
-    	return view('users.editPassword');
+
+    public function showEditPassword()
+    {
+        return view('users.editPassword');
     }
-    public function editPassword(Request $request){
-    	$user = Auth::user();
+
+    public function editPassword(Request $request)
+    {
+        $user = Auth::user();
 
         $password = $request->validate([
-        	'oldPassword' => 'required',
-        	'newPassword' => 'required|confirmed'
-        ]);  
-        if(!Hash::check($request->oldPassword, Auth::user()->password)){
-        	return "Password Invalida";
-        }          
+            'oldPassword' => 'required',
+            'newPassword' => 'required|confirmed'
+        ]);
+        if (!Hash::check($request->oldPassword, Auth::user()->password)) {
+            return "Password Invalida";
+        }
         dd($user, $request->oldPassword, $password);
         /*
         update($request,$user)

@@ -71,7 +71,7 @@ class User extends Authenticatable
     {
         return $this->quota_paga===1;
     }
-    public function isPasswordInicial
+    public function isPasswordInicial()
     {
         return $this->password_inicial===1;
     }

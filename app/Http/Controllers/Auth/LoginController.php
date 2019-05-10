@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use App\Http\Controllers\Auth\Request;
 
 class LoginController extends Controller
 {
@@ -44,4 +45,9 @@ class LoginController extends Controller
             return redirect()->route('login')->with('error', 'Tem que estar ativo');
         }
     }
+    /*
+     *     public function logout(){
+    	Auth::logout();
+    	return redirect()->route('welcome');
+    }*/
 }
