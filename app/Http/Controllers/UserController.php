@@ -63,8 +63,12 @@ class UserController extends Controller
 
     public function index()
     {
-        $this->authorize('list', User::class);
-        $users = User::all();
+        if($this->authorize('list', User::class)){
+            $users = User::all();
+        }else{
+            $users=User::where('ativo',=,1)->paginate(15,['num_socio','nome_informal','foto','email','telefone','tipo_socio','num_licenca','direcao'])    
+        }
+        
         return view('users.index', compact('users'));
     }
     public function showEditPassword(){

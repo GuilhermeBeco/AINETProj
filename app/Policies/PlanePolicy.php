@@ -22,6 +22,10 @@ class PlanePolicy
         //
     }
 
+    public function list(User $auth)
+    {
+        return true;
+    }
    
     public function create(User $user)
     {  if($user->isDirecao()){

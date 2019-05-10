@@ -32,7 +32,7 @@ class UserPolicy
 
     public function list(User $auth)
     {
-        return true;
+        return $user->isDirecao();
     }
 
     public function update(User $user, User $model)
