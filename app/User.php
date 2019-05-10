@@ -10,29 +10,16 @@ class User extends Authenticatable
 {
     use Notifiable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
     protected $fillable = [
-        'name', 'email', 'password', 'informal name', 'gender', 'birth date', 'NIF', 'Phone','Adress','type','check_pay','check_active','check_pass','check_dir'
+        'name', 'email', 'password', 'num_socio', 'nome_informal', 'sexo', 'data_nascimento', 'tipo_socio','quota_paga','ativo','password_inicial','direcao'
     ];
 
-    /**
-     * The attributes that should be hidden for arrays.
-     *
-     * @var array
-     */
+   
     protected $hidden = [
         'password', 'remember_token',
     ];
 
-    /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
-     */
+    
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
@@ -80,4 +67,13 @@ class User extends Authenticatable
     {
         return $this->direcao===1;
     }
+    public function isPago()
+    {
+        return $this->quota_paga===1;
+    }
+    public function isPasswordInicial
+    {
+        return $this->password_inicial===1;
+    }
+
 }

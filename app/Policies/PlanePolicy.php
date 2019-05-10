@@ -22,25 +22,14 @@ class PlanePolicy
         //
     }
 
-    /**
-     * Determine whether the user can create planes.
-     *
-     * @param  \App\User  $user
-     * @return mixed
-     */
+   
     public function create(User $user)
     {  if($user->isDirecao()){
         return true;
       }
     }
 
-    /**
-     * Determine whether the user can update the plane.
-     *
-     * @param  \App\User  $user
-     * @param  \App\Plane  $plane
-     * @return mixed
-     */
+   
     public function update(User $user, Plane $plane)
     {
           if($user->isDirecao()){
@@ -48,13 +37,6 @@ class PlanePolicy
       }
     }
 
-    /**
-     * Determine whether the user can delete the plane.
-     *
-     * @param  \App\User  $user
-     * @param  \App\Plane  $plane
-     * @return mixed
-     */
     public function delete(User $user, Plane $plane)
     {
          if($user->isDirecao()){
@@ -62,27 +44,4 @@ class PlanePolicy
       }
     }
 
-    /**
-     * Determine whether the user can restore the plane.
-     *
-     * @param  \App\User  $user
-     * @param  \App\Plane  $plane
-     * @return mixed
-     */
-    public function restore(User $user, Plane $plane)
-    {
-        //
-    }
-
-    /**
-     * Determine whether the user can permanently delete the plane.
-     *
-     * @param  \App\User  $user
-     * @param  \App\Plane  $plane
-     * @return mixed
-     */
-    public function forceDelete(User $user, Plane $plane)
-    {
-        //
-    }
 }

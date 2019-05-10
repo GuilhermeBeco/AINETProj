@@ -26,7 +26,9 @@ class UserController extends Controller
 
         $user = new User();
         $user->fill($request->all());
-        $user->password = Hash::make($request->password);
+        $user->ativio=false;
+        $user->password_inicial=true;
+        $user->password = Hash::make($request->data_nascimento);//a pass inicial
         $user->save();
 
         return redirect()
@@ -79,5 +81,8 @@ class UserController extends Controller
         	return "Password Invalida";
         }          
         dd($user, $request->oldPassword, $password);
+        /*
+        update($requeste,$user)
+        */
     }
 }
