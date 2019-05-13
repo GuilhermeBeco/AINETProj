@@ -86,13 +86,13 @@ class UserController extends Controller
         $user = Auth::user();
 
         $password = $request->validate([
-            'oldPassword' => 'required',
+            'old_password' => 'required',
             'newPassword' => 'required|confirmed'
         ]);
-        if (!Hash::check($request->oldPassword, Auth::user()->password)) {
+        if (!Hash::check($request->old_password, Auth::user()->password)) {
             return "Password Invalida";
         }
-        dd($user, $request->oldPassword, $password);
+        dd($user, $request->old_password, $password);
         /*
         update($request,$user)
         */

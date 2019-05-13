@@ -18,7 +18,7 @@
                             <label for="inputPassword">Old Password</label>
                             <input
                                 type="password" class="form-control"
-                                name="oldPassword" id="inputPassword"/>
+                                name="old_password" id="inputPassword"/>
                         </div>
                         <div class="form-group">
                             <label for="inputNewPassword">New Password</label>
