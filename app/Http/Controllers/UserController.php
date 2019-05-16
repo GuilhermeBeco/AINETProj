@@ -51,7 +51,32 @@ class UserController extends Controller
     public function update(UpdateUserRequest $request, User $user)
     {
         $this->authorize('update', $user);
-        $user->fill($request->validated());
+        $array=array();
+        if($request->has('foto')){
+         $array['foto'] = 'required';
+        }
+        if($request->has('nome_informal')){
+         $array['nome_informal'] = 'required';
+        }
+        if($request->has('email')){
+         $array['email'] = 'required';
+        }
+        if($request->has('name')){
+         $array['name'] = 'required';
+        }
+        if($request->has('data_nascimento')){
+         $array['data_nascimento'] = 'required';
+        }
+        if($request->has('nif')){
+         $array['nif'] = 'required';
+        }
+        if($request->has('telefone')){
+         $array['telefone'] = 'required';
+        }
+        if($request->has('endereco')){
+         $array['endereco'] = 'required';
+        }
+        $user->fill($request->validated($array));
         $user->save();
 
         return redirect()
@@ -96,5 +121,80 @@ class UserController extends Controller
         /*
         update($request,$user)
         */
+    }
+    public function selectFilter(Request $request)
+    {
+         if ($request->has('num_socio')) {
+            $users->where('num_socio', $request->num_socio);
+        }
+        if ($request->has('nome_informal')) {
+            $users->where('nome_informal', $request->nome_informal);
+        }
+        if ($request->has('email')) {
+            $users->where('email', $request->email);
+        }
+        if ($request->has('telefone')) {
+            $users->where('telefone', $request->telefone);
+        }
+        if ($request->has('tipo_socio')) {
+            $users->where('tipo_socio', $request->tipo_socio);
+        }
+        if ($request->has('num_licenca')) {
+            $users->where('num_licenca', $request->num_licenca);
+        }
+        $users->where('ativo',1);
+        $users->get();//falta os campos
+        return view('users.index', compact('users'));
+        //meter em orm..
+    }
+
+    public function startHome(){
+        $user=Auth::user();
+        //policy para a distinguir a us 6 da us 14
+        $details = User::where('id' == $user->id)->paginate(15, ['num_socio', 'nome_informal', 'foto', 'email', 'telefone', 'tipo_socio', 'endereco','name','sexo','data_nascimento','nif','ativo','quotas_pagas','direcao']);
+        //falta funcao de converter o tipo de socio
+        return view('users.details', compact('details')); //falta rota
+    }
+    public function selectPlane(){
+        $planes=Plane::where('num_lugares'>0)->paginate(15,['matricula','marca','modelo','num_lugares','conta_horas','preco_hora']);
+        //o conta_horas e o total horas??
+        return view('planes.index',compact('planes'));
+        //falta vista e rotas
+
+    }
+    public function selectMove(){
+        $moves=Move::where('id'>0)->paginate(15['id','aeronave.matricul','data','hora_descolagem','hora_aterragem','tempo_voo','natureza','users.nome_informal','aerodromo_partida.id','aerodromo_chegada.id','num_aterragens','num_descolagens','num_diario','num_servico','conta_horas_inicio','conta_horas_fim','num_pessoas','tipo_instrucao','intrutor.nome_informal','confirmado','observacoes']);
+        return view ('moves.index',compact(('moves')));//falta vista e rotas
+        //duvida-> ir buscar os dados das fk's
+    }
+    public function selectFilter(Request $request)
+    {
+         if ($request->has('id')) {
+            $moves->where('id', $request->num_socio);
+        }
+        if ($request->has('plane')) {
+            $moves->where('aeronave', $request->plane);//duvida do que é para ir buscar e como
+        }
+        if ($request->has('piloto')) {
+            $users->where('piloto_id', $request->piloto);//como ir buscar o nome
+        }
+        if ($request->has('instrutor')) {
+            $users->where('instrutor_id', $request->instrutor);//como ir buscar o nome
+        }
+        if ($request->has('natureza')) {
+            $users->where('natureza', $request->natureza);
+        }
+        if ($request->has('confirmado')) {
+            $users->where('confirmado', $request->confirmado);
+        }
+        if ($request->has('data_voo')) {
+            $users->whereRaw('data_voo ', $request->data_voo);
+        }
+        //fazer o menor e o maior ??
+
+        $users->where('ativo',1);
+        $users->get();
+        return view('users.index', compact('users'));
+        //meter em orm..
     }
 }
