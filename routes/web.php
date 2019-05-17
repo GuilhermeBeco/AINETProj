@@ -17,5 +17,9 @@ Route::get('/', function () {
 
 Auth::routes();
 Route::get('/home', 'HomeController@index')->name('home');
+<<<<<<< Updated upstream
 Route::get('/password', 'UserController@showEditPassword')->name('showEditPassword');
 Route::patch('/password', 'UserController@editPassword')->name('editPassword');
+=======
+Route::patch('/password','UserController@editPassword')->name('editPassword');
+>>>>>>> Stashed changes

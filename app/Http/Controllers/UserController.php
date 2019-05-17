@@ -76,6 +76,35 @@ class UserController extends Controller
         if($request->has('endereco')){
          $array['endereco'] = 'required';
         }
+        if($user->isPiloto){
+            if($request->has('num_licenca')){
+          $array['num_licenca'] = 'required';
+            }
+          if($request->has('tipo_licenca')){
+             $array['tipo_licenca'] = 'required';
+            }
+          if($request->has('validade_licenca')){
+            $array['validade_licenca']='required';
+          }
+           if($request->has('num_certificado')){
+            $array['num_certificado']='required';
+          }
+           if($request->has('classe_certificado')){
+            $array['classe_certificado']='required';
+          }
+           if($request->has('validade_certificado')){
+            $array['validade_certificado']='required';
+          }
+            if($request->has('certificado_confirmado')){
+            $array['certificado_confirmado']='required';
+          }
+            if($request->has('licenca_confirmado')){
+            $array['licenca_confirmado']='required';
+          }
+          //falta pdf's
+          //na vista, adicionar um campo hiden com os confirmados a false;
+        }
+        }
         $user->fill($request->validated($array));
         $user->save();
 
@@ -105,7 +134,6 @@ class UserController extends Controller
     {
         return view('users.editPassword');
     }
-
     public function editPassword(Request $request)
     {
         $user = Auth::user();
@@ -117,14 +145,17 @@ class UserController extends Controller
         if (!Hash::check($request->old_password, Auth::user()->password)) {
             return "Password Invalida";
         }
-        dd($user, $request->old_password, $password);
-        /*
-        update($request,$user)
-        */
+        $user->password=Hash::make($password['password']);
+        $user->save();
+        
+        return redirect()
+            ->route('home')
+            ->with(200, 'Password updated successfully!');
     }
-    public function selectFilter(Request $request)
+    public function selectFilterUsers(Request $request)
     {
-         if ($request->has('num_socio')) {
+        $users = (new User)->newQuery();
+        if ($request->has('num_socio')) {
             $users->where('num_socio', $request->num_socio);
         }
         if ($request->has('nome_informal')) {
@@ -143,58 +174,65 @@ class UserController extends Controller
             $users->where('num_licenca', $request->num_licenca);
         }
         $users->where('ativo',1);
-        $users->get();//falta os campos
+        $users->get(['num_socio','nome_informal', 'foto', 'email', 'telefone', 'tipo_socio', 'num_licenca', 'direcao']);
         return view('users.index', compact('users'));
-        //meter em orm..
-    }
-
-    public function startHome(){
+      }
+    public function infoUser(){
         $user=Auth::user();
-        //policy para a distinguir a us 6 da us 14
-        $details = User::where('id' == $user->id)->paginate(15, ['num_socio', 'nome_informal', 'foto', 'email', 'telefone', 'tipo_socio', 'endereco','name','sexo','data_nascimento','nif','ativo','quotas_pagas','direcao']);
-        //falta funcao de converter o tipo de socio
+        if($user->isNormal()){
+        $details = User::where('id' == $user->id)->paginate(15, ['num_socio', 'nome_informal', 'foto', 'email', 'telefone','tipo_socio', 'endereco','name','sexo','data_nascimento','nif','ativo','quotas_pagas','direcao']);
+        }
+        elseif ($user->isPiloto()) {
+            $details = User::where('id' == $user->id)->paginate(15, ['num_socio', 'nome_informal', 'foto', 'email', 'telefone','tipo_socio', 'endereco','name','sexo','data_nascimento','nif','ativo','quotas_pagas','direcao','num_licenca','tipo_licenca','intrutor','validade_licenca','licenca_confirmado','pdf_liceca','num_certificado','classe_certificado','validade_certificado','certificado_confirmado','aeronave','pfd_certificado']); //ligacao tipos_licencas e classes de certificado//pdf's
+        }
         return view('users.details', compact('details')); //falta rota
     }
     public function selectPlane(){
         $planes=Plane::where('num_lugares'>0)->paginate(15,['matricula','marca','modelo','num_lugares','conta_horas','preco_hora']);
-        //o conta_horas e o total horas??
         return view('planes.index',compact('planes'));
         //falta vista e rotas
-
     }
     public function selectMove(){
-        $moves=Move::where('id'>0)->paginate(15['id','aeronave.matricul','data','hora_descolagem','hora_aterragem','tempo_voo','natureza','users.nome_informal','aerodromo_partida.id','aerodromo_chegada.id','num_aterragens','num_descolagens','num_diario','num_servico','conta_horas_inicio','conta_horas_fim','num_pessoas','tipo_instrucao','intrutor.nome_informal','confirmado','observacoes']);
+        $moves=Move::where('id'>0)->paginate(15,['id','aeronave','data','hora_descolagem','hora_aterragem','tempo_voo','natureza','piloto','aerodromo_partida.id','aerodromo_chegada.id','num_aterragens','num_descolagens','num_diario','num_servico','conta_horas_inicio','conta_horas_fim','num_pessoas','tipo_instrucao','intrutor','confirmado','observacoes']);
+            $moves->piloto->nome_informal//vista
         return view ('moves.index',compact(('moves')));//falta vista e rotas
         //duvida-> ir buscar os dados das fk's
     }
-    public function selectFilter(Request $request)
+    public function selectFilterPlane(Request $request)
     {
-         if ($request->has('id')) {
+        $moves = (new Move)->newQuery();
+        if ($request->has('id')) {
             $moves->where('id', $request->num_socio);
         }
         if ($request->has('plane')) {
             $moves->where('aeronave', $request->plane);//duvida do que é para ir buscar e como
         }
         if ($request->has('piloto')) {
-            $users->where('piloto_id', $request->piloto);//como ir buscar o nome
+            $moves->where('piloto_id', $request->piloto);//como ir buscar o nome
         }
         if ($request->has('instrutor')) {
-            $users->where('instrutor_id', $request->instrutor);//como ir buscar o nome
+            $moves->where('instrutor_id', $request->instrutor);//como ir buscar o nome
         }
         if ($request->has('natureza')) {
-            $users->where('natureza', $request->natureza);
+            $moves->where('natureza', $request->natureza);
         }
         if ($request->has('confirmado')) {
-            $users->where('confirmado', $request->confirmado);
+            $moves->where('confirmado', $request->confirmado);
         }
         if ($request->has('data_voo')) {
-            $users->whereRaw('data_voo ', $request->data_voo);
+            if($reques->has('radioIgual')){
+              $moves->whereRaw('data_voo', '=', $request->data_voo);
+            }
+            elseif($request->has('radioMaior')){
+                $moves->whereRaw('data_voo', '<', $request->data_voo);
+            }
+            else{
+                $moves->whereRaw('data_voo', '>', $request->data_voo);
+            }
         }
-        //fazer o menor e o maior ??
+        $moves->get('id','aeronave.matricul','data','hora_descolagem','hora_aterragem','tempo_voo','natureza','users.nome_informal','aerodromo_partida.id','aerodromo_chegada.id','num_aterragens','num_descolagens','num_diario','num_servico','conta_horas_inicio','conta_horas_fim','num_pessoas','tipo_instrucao','intrutor.nome_informal','confirmado','observacoes']);
 
-        $users->where('ativo',1);
-        $users->get();
-        return view('users.index', compact('users'));
-        //meter em orm..
+        return view('planes.index', compact('users'));
+        
     }
 }

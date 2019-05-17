@@ -26,7 +26,7 @@
     @foreach ($users as $user)
         <tr>
             <td>{{$user->num_socio}}</td>
-            <td>{{$user->tipo_socio}}</td>
+            <td>{{$user->typeToStr() }}</td>
             <td>{{$user->nome_informal}}</td>
             <td>{{$user->email}}</td>
             <td>{{$user->foto_url}}</td>

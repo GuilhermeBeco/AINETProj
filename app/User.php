@@ -75,5 +75,10 @@ class User extends Authenticatable
     {
         return $this->password_inicial===1;
     }
+   public function aeronave(){
+    return $this->hasMany('App/Plane')->as('aeronave');
+   }//needed?
+   
+  
 
 }

@@ -60,8 +60,13 @@
                                     <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                                         @csrf
                                     </form>
+<<<<<<< Updated upstream
                                     <a class="dropdown-item" href="{{ route('showEditPassword') }}">
+=======
+                                    <a class="dropdown-item" action="{{ route('editPassword') }}"method="POST">
+>>>>>>> Stashed changes
                                         Edit
+                                        {{method_field('DELETE')}}
                                     </a>
                                 </div>
                             </li>
